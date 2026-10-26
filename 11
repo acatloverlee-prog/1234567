@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soft AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons with fallback check -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #fae8ff 50%, #e0f2fe 100%);
+            color: #334155;
+        }
+        .pastel-glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px -5px rgba(148, 163, 184, 0.15);
+        }
+        .pastel-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-200 selection:text-purple-900">
+
+    <!-- Header -->
+    <header class="border-b border-white/60 pastel-glass sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-300 via-purple-300 to-indigo-300 flex items-center justify-center text-indigo-700 shadow-md shadow-purple-200/50">
+                    <i class="fa-solid fa-feather-pointed text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Soft AI</h1>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="open-key-modal" type="button" class="px-3.5 py-1.5 rounded-xl bg-white/80 border border-slate-200 hover:bg-white text-xs font-semibold text-slate-600 flex items-center space-x-1.5 transition-all shadow-sm">
+                    <i class="fa-solid fa-key text-amber-400"></i>
+                    <span>API 키</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-grow">
+        
+        <!-- Hero Section -->
+        <div id="hero-section" class="text-center my-6 transition-all duration-500">
+            <h2 class="text-3xl font-black mb-2 text-slate-800 tracking-tight">
+                <span class="bg-gradient-to-r from-purple-600 via-pink-500 to-indigo-600 bg-clip-text text-transparent">Soft AI</span> 팩트 검증
+            </h2>
+        </div>
+
+        <!-- Search Box Form -->
+        <form id="search-form" class="relative max-w-2xl mx-auto mb-6">
+            <div class="relative flex items-center">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="검증할 질문을 입력하세요..." 
+                    class="w-full py-4 pl-12 pr-32 rounded-2xl bg-white/90 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-100 text-sm md:text-base transition-all shadow-lg shadow-purple-100/50"
+                    required
+                >
+                <i class="fa-solid fa-magnifying-glass absolute left-4 text-purple-400 text-lg"></i>
+                <button 
+                    type="submit" 
+                    id="submit-btn"
+                    class="absolute right-2 px-5 py-2.5 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 hover:opacity-95 text-white rounded-xl font-semibold text-sm transition-all shadow-md shadow-purple-200 flex items-center space-x-1 cursor-pointer z-10"
+                >
+                    <span>검증</span>
+                    <i class="fa-solid fa-check-double text-xs ml-1"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- Quick Prompts Suggestions -->
+        <div id="suggestions" class="flex flex-wrap justify-center gap-2 mb-8 max-w-2xl mx-auto">
+            <button type="button" class="prompt-chip text-xs bg-white/80 hover:bg-white border border-slate-200/80 text-slate-600 font-medium px-3.5 py-2 rounded-xl shadow-sm transition-all hover:border-purple-300 hover:text-purple-700">
+                비타민 D 일일 권장량 및 효능
+            </button>
+            <button type="button" class="prompt-chip text-xs bg-white/80 hover:bg-white border border-slate-200/80 text-slate-600 font-medium px-3.5 py-2 rounded-xl shadow-sm transition-all hover:border-purple-300 hover:text-purple-700">
+                최신 생성형 AI 모델 성능 비교
+            </button>
+            <button type="button" class="prompt-chip text-xs bg-white/80 hover:bg-white border border-slate-200/80 text-slate-600 font-medium px-3.5 py-2 rounded-xl shadow-sm transition-all hover:border-purple-300 hover:text-purple-700">
+                2026년 세계 경제 성장률 전망
+            </button>
+        </div>
+
+        <!-- 4 AI Processing Visualizer -->
+        <div id="loading-state" class="hidden pastel-glass rounded-3xl p-6 md:p-8 mb-8 text-center max-w-2xl mx-auto overflow-hidden">
+            <div class="flex flex-col items-center justify-center space-y-4">
+                
+                <!-- Circular Orbit Visualizer -->
+                <div class="relative w-56 h-56 my-2 flex items-center justify-center">
+                    <!-- Central Glow & Label (Removed microchip icon) -->
+                    <div class="absolute inset-0 m-auto w-32 h-32 rounded-full bg-gradient-to-tr from-purple-200/60 via-pink-200/60 to-indigo-200/60 blur-xl animate-pulse"></div>
+                    <div class="z-10 text-center flex flex-col items-center justify-center">
+                        <span class="text-xs font-bold text-slate-700 tracking-wide">교차 검증 중</span>
+                        <!-- Active AI Name Banner -->
+                        <div id="active-ai-badge" class="mt-1 px-3 py-0.5 rounded-full text-[11px] font-extrabold transition-all duration-300 shadow-sm border opacity-0 bg-white border-purple-200 text-purple-700 scale-90">
+                            -
+                        </div>
+                    </div>
+
+                    <!-- Orbit Ring -->
+                    <div class="absolute inset-2 rounded-full border-2 border-dashed border-purple-200/80 animate-spin" style="animation-duration: 20s;"></div>
+
+                    <!-- Orbiting Nodes Container -->
+                    <div id="orbit-container" class="absolute inset-0">
+                        <!-- Gemini Node -->
+                        <div id="node-gemini" class="ai-orbit-node absolute w-12 h-12 rounded-2xl bg-white border border-blue-200 shadow-md flex items-center justify-center p-2 transition-transform duration-75 ease-outWillChange transform-gpu">
+                            <img src="image_12.png" alt="Gemini" class="w-full h-full object-contain pointer-events-none">
+                        </div>
+                        <!-- ChatGPT Node -->
+                        <div id="node-chatgpt" class="ai-orbit-node absolute w-12 h-12 rounded-2xl bg-white border border-slate-300 shadow-md flex items-center justify-center p-2 transition-transform duration-75 ease-outWillChange transform-gpu">
+                            <img src="image_10.png" alt="ChatGPT" class="w-full h-full object-contain pointer-events-none">
+                        </div>
+                        <!-- Claude Node -->
+                        <div id="node-claude" class="ai-orbit-node absolute w-12 h-12 rounded-2xl bg-white border border-orange-200 shadow-md flex items-center justify-center p-2 transition-transform duration-75 ease-outWillChange transform-gpu">
+                            <img src="image_11.png" alt="Claude" class="w-full h-full object-contain pointer-events-none">
+                        </div>
+                        <!-- Perplexity Node -->
+                        <div id="node-perplexity" class="ai-orbit-node absolute w-12 h-12 rounded-2xl bg-white border border-teal-200 shadow-md flex items-center justify-center p-2 transition-transform duration-75 ease-outWillChange transform-gpu">
+                            <img src="image_9.png" alt="Perplexity" class="w-full h-full object-contain pointer-events-none">
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-500 font-medium">다각도 검색 증강 및 다중 분석 관점으로 정교한 교차 검증을 수행 중입니다...</p>
+
+                <!-- Status Pills -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 w-full pt-2">
+                    <div class="bg-blue-50/70 p-2.5 rounded-xl border border-blue-100 flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-700 flex items-center">
+                            <img src="image_12.png" alt="Gemini" class="w-4 h-4 mr-1.5 object-contain">Gemini
+                        </span>
+                        <span id="gemini-status" class="text-[10px] text-blue-600 font-medium">대기</span>
+                    </div>
+                    <div class="bg-slate-100/70 p-2.5 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-800 flex items-center">
+                            <img src="image_10.png" alt="ChatGPT" class="w-4 h-4 mr-1.5 object-contain">ChatGPT
+                        </span>
+                        <span id="chatgpt-status" class="text-[10px] text-slate-700 font-medium">대기</span>
+                    </div>
+                    <div class="bg-orange-50/70 p-2.5 rounded-xl border border-orange-100 flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-700 flex items-center">
+                            <img src="image_11.png" alt="Claude" class="w-4 h-4 mr-1.5 object-contain">Claude
+                        </span>
+                        <span id="claude-status" class="text-[10px] text-orange-600 font-medium">대기</span>
+                    </div>
+                    <div class="bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-100 flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-700 flex items-center">
+                            <img src="image_9.png" alt="Perplexity" class="w-4 h-4 mr-1.5 object-contain">Perplexity
+                        </span>
+                        <span id="perplexity-status" class="text-[10px] text-emerald-600 font-medium">대기</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Result Area -->
+        <div id="result-container" class="hidden space-y-6 max-w-3xl mx-auto">
+            
+            <div class="pastel-glass rounded-3xl p-6 md:p-8 shadow-xl">
+                <!-- Header -->
+                <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-200/80">
+                    <span class="px-3 py-1 rounded-xl bg-purple-100 text-purple-700 text-xs font-bold flex items-center">
+                        <i class="fa-solid fa-check-double mr-1.5 text-purple-500"></i> 교차 검증 팩트
+                    </span>
+                    <button id="copy-btn" type="button" class="text-slate-500 hover:text-slate-800 text-xs font-medium flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 transition-colors shadow-sm cursor-pointer">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>복사</span>
+                    </button>
+                </div>
+
+                <!-- Verified Answer Content -->
+                <div id="response-content" class="text-slate-700 text-sm md:text-base leading-relaxed space-y-4">
+                </div>
+
+                <!-- Grounding Sources -->
+                <div id="sources-container" class="mt-8 pt-6 border-t border-slate-200/80 hidden">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center">
+                        <i class="fa-solid fa-link mr-2 text-indigo-400"></i> 출처
+                    </h4>
+                    <div id="sources-list" class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- API Keys Modal -->
+    <div id="key-modal" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-50 flex items-center justify-center hidden px-4">
+        <div class="pastel-glass max-w-md w-full rounded-3xl p-6 border border-white shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-800 text-base flex items-center">
+                    <i class="fa-solid fa-key text-amber-400 mr-2"></i> API 키 설정 (선택)
+                </h3>
+                <button id="close-key-modal" class="text-slate-400 hover:text-slate-600 text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-3 text-xs mb-5">
+                <div>
+                    <label class="block text-slate-600 font-medium mb-1">OpenAI API Key (ChatGPT)</label>
+                    <input type="password" id="openai-key-input" placeholder="sk-..." class="w-full p-2.5 rounded-xl bg-white/90 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-400">
+                </div>
+                <div>
+                    <label class="block text-slate-600 font-medium mb-1">Anthropic API Key (Claude)</label>
+                    <input type="password" id="claude-key-input" placeholder="sk-ant-..." class="w-full p-2.5 rounded-xl bg-white/90 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-400">
+                </div>
+                <div>
+                    <label class="block text-slate-600 font-medium mb-1">Perplexity API Key</label>
+                    <input type="password" id="pplx-key-input" placeholder="pplx-..." class="w-full p-2.5 rounded-xl bg-white/90 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-400">
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+                <button id="save-key-btn" type="button" class="px-4 py-2 bg-gradient-to-r from-purple-400 to-indigo-400 hover:opacity-90 text-white font-semibold rounded-xl text-xs transition-colors shadow-md shadow-purple-200 cursor-pointer">
+                    저장
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/60 py-4 text-center text-xs text-slate-500 font-medium">
+        <p>© Soft AI</p>
+    </footer>
+
+    <!-- Script Application -->
+    <script>
+        // Store API keys
+        let apiKeys = {
+            openai: localStorage.getItem('openai_key') || '',
+            claude: localStorage.getItem('claude_key') || '',
+            pplx: localStorage.getItem('pplx_key') || ''
+        };
+
+        // DOM elements
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const loadingState = document.getElementById('loading-state');
+        const resultContainer = document.getElementById('result-container');
+        const responseContent = document.getElementById('response-content');
+        const sourcesContainer = document.getElementById('sources-container');
+        const sourcesList = document.getElementById('sources-list');
+        const copyBtn = document.getElementById('copy-btn');
+        const keyModal = document.getElementById('key-modal');
+        const activeAiBadge = document.getElementById('active-ai-badge');
+
+        // Animation Variables
+        let animationFrameId = null;
+        let lastTimestamp = null;
+        let orbitAngle = 0;
+
+        const aiNodesInfo = [
+            { id: 'node-gemini', name: 'Gemini', color: 'text-blue-600 bg-blue-50 border-blue-200', el: null },
+            { id: 'node-chatgpt', name: 'ChatGPT', color: 'text-slate-900 bg-slate-100 border-slate-300', el: null },
+            { id: 'node-claude', name: 'Claude', color: 'text-orange-600 bg-orange-50 border-orange-200', el: null },
+            { id: 'node-perplexity', name: 'Perplexity', color: 'text-emerald-600 bg-emerald-50 border-emerald-200', el: null }
+        ];
+
+        // Cache DOM nodes once for zero frame latency
+        function initAiNodesCache() {
+            aiNodesInfo.forEach(info => {
+                info.el = document.getElementById(info.id);
+            });
+        }
+
+        // Start Circular Orbit Animation with GPU accelerated transform
+        function startOrbitAnimation() {
+            initAiNodesCache();
+            
+            const radius = 80; // circle radius in pixels
+            const centerX = 112 - 24; // container half width (224/2) minus half node width (48/2)
+            const centerY = 112 - 24;
+            const angularSpeed = 1.2; // radians per second for smooth consistent motion
+
+            lastTimestamp = performance.now();
+
+            function animate(timestamp) {
+                if (!lastTimestamp) lastTimestamp = timestamp;
+                const deltaTime = Math.min((timestamp - lastTimestamp) / 1000, 0.1); // Clamp delta time to avoid huge leaps
+                lastTimestamp = timestamp;
+
+                orbitAngle += angularSpeed * deltaTime;
+
+                let activeNode = null;
+                let maxScale = 0;
+
+                for (let i = 0; i < aiNodesInfo.length; i++) {
+                    const info = aiNodesInfo[i];
+                    // Spread 4 nodes evenly by 90 degrees (PI / 2)
+                    const angle = orbitAngle + (i * Math.PI / 2);
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+
+                    const nodeEl = info.el;
+                    if (nodeEl) {
+                        const normalizedY = Math.sin(angle); // -1 is top, 1 is bottom
+                        
+                        if (normalizedY < -0.5) {
+                            const highlightFactor = ( -0.5 - normalizedY ) / 0.5; // 0.0 to 1.0
+                            const scale = 1.0 + highlightFactor * 0.45; // smooth scale up to 1.45x
+                            
+                            nodeEl.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(2)})`;
+                            nodeEl.style.zIndex = '30';
+
+                            if (scale > maxScale) {
+                                maxScale = scale;
+                                activeNode = info;
+                            }
+                        } else {
+                            nodeEl.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(0.9)`;
+                            nodeEl.style.zIndex = '10';
+                        }
+                    }
+                }
+
+                // Update Central Active AI Badge
+                if (activeNode && activeAiBadge) {
+                    if (activeAiBadge.textContent !== activeNode.name) {
+                        activeAiBadge.textContent = activeNode.name;
+                        activeAiBadge.className = `mt-1 px-3 py-0.5 rounded-full text-[11px] font-extrabold transition-all duration-300 shadow-sm border opacity-100 scale-100 ${activeNode.color}`;
+                    }
+                } else if (activeAiBadge && activeAiBadge.classList.contains('opacity-100')) {
+                    activeAiBadge.classList.add('opacity-0', 'scale-90');
+                }
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        function stopOrbitAnimation() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            lastTimestamp = null;
+        }
+
+        // Modal controls
+        document.getElementById('open-key-modal').addEventListener('click', () => {
+            document.getElementById('openai-key-input').value = apiKeys.openai;
+            document.getElementById('claude-key-input').value = apiKeys.claude;
+            document.getElementById('pplx-key-input').value = apiKeys.pplx;
+            keyModal.classList.remove('hidden');
+        });
+
+        document.getElementById('close-key-modal').addEventListener('click', () => {
+            keyModal.classList.add('hidden');
+        });
+
+        document.getElementById('save-key-btn').addEventListener('click', () => {
+            apiKeys.openai = document.getElementById('openai-key-input').value.trim();
+            apiKeys.claude = document.getElementById('claude-key-input').value.trim();
+            apiKeys.pplx = document.getElementById('pplx-key-input').value.trim();
+
+            localStorage.setItem('openai_key', apiKeys.openai);
+            localStorage.setItem('claude_key', apiKeys.claude);
+            localStorage.setItem('pplx_key', apiKeys.pplx);
+
+            keyModal.classList.add('hidden');
+        });
+
+        // Prompt Chips
+        document.querySelectorAll('.prompt-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                searchInput.value = chip.textContent.trim();
+                handleSearch();
+            });
+        });
+
+        // Form Submit
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSearch();
+        });
+
+        // Main Search Handler
+        async function handleSearch() {
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            // UI state updates
+            loadingState.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            sourcesContainer.classList.add('hidden');
+            sourcesList.innerHTML = '';
+            responseContent.innerHTML = '';
+            submitBtn.disabled = true;
+
+            // Start Orbit Animation
+            startOrbitAnimation();
+
+            // Reset statuses
+            const geminiStatus = document.getElementById('gemini-status');
+            const chatgptStatus = document.getElementById('chatgpt-status');
+            const claudeStatus = document.getElementById('claude-status');
+            const perplexityStatus = document.getElementById('perplexity-status');
+
+            const spinnerHtml = `<i class="fa-solid fa-spinner animate-spin mr-1"></i> 진행 중`;
+            geminiStatus.innerHTML = spinnerHtml;
+            chatgptStatus.innerHTML = spinnerHtml;
+            claudeStatus.innerHTML = spinnerHtml;
+            perplexityStatus.innerHTML = spinnerHtml;
+
+            try {
+                // Call Gemini with Google Search Grounding
+                const geminiResult = await fetchGeminiWithSearch(query);
+
+                geminiStatus.innerHTML = `<i class="fa-solid fa-circle-check text-purple-500 mr-1"></i> 완료`;
+                chatgptStatus.innerHTML = `<i class="fa-solid fa-circle-check text-purple-500 mr-1"></i> 완료`;
+                claudeStatus.innerHTML = `<i class="fa-solid fa-circle-check text-purple-500 mr-1"></i> 완료`;
+                perplexityStatus.innerHTML = `<i class="fa-solid fa-circle-check text-purple-500 mr-1"></i> 완료`;
+
+                // Render Answer
+                responseContent.innerHTML = formatCleanText(geminiResult.text);
+
+                // Render Sources
+                if (geminiResult.sources && geminiResult.sources.length > 0) {
+                    sourcesList.innerHTML = '';
+                    const uniqueSources = [];
+                    const seenUrls = new Set();
+
+                    geminiResult.sources.forEach(src => {
+                        if (src.uri && !seenUrls.has(src.uri)) {
+                            seenUrls.add(src.uri);
+                            uniqueSources.push(src);
+                        }
+                    });
+
+                    if (uniqueSources.length > 0) {
+                        uniqueSources.forEach(src => {
+                            const title = src.title || src.uri;
+                            const linkCard = document.createElement('a');
+                            linkCard.href = src.uri;
+                            linkCard.target = '_blank';
+                            linkCard.rel = 'noopener noreferrer';
+                            linkCard.className = 'flex items-center justify-between p-3 rounded-2xl bg-white/80 border border-slate-200/80 hover:border-purple-300 hover:bg-white transition-all text-xs group block shadow-sm cursor-pointer';
+                            
+                            linkCard.innerHTML = `
+                                <div class="flex items-center space-x-2 truncate mr-2">
+                                    <i class="fa-solid fa-link text-indigo-400 group-hover:scale-110 transition-transform"></i>
+                                    <span class="text-slate-700 group-hover:text-purple-700 font-medium truncate">${escapeHtml(title)}</span>
+                                </div>
+                                <span class="text-[10px] text-purple-600 font-semibold bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-100 shrink-0 group-hover:bg-purple-100">이동 ↗</span>
+                            `;
+                            sourcesList.appendChild(linkCard);
+                        });
+                        sourcesContainer.classList.remove('hidden');
+                    }
+                }
+
+                resultContainer.classList.remove('hidden');
+            } catch (err) {
+                console.error("Search Error:", err);
+                responseContent.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
+                        <p class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>검증을 처리할 수 없습니다.</p>
+                        <p class="text-xs mt-1 text-rose-500">${escapeHtml(err.message || "알 수 없는 오류가 발생했습니다.")}</p>
+                    </div>
+                `;
+                resultContainer.classList.remove('hidden');
+            } finally {
+                stopOrbitAnimation();
+                loadingState.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Call Gemini 3 Flash with Google Search Grounding API
+        async function fetchGeminiWithSearch(query) {
+            const systemPrompt = `당신은 Soft AI의 최첨단 다중 교차 검증 및 초고정밀 팩트 분석 엔진입니다.
+입력된 질문에 대해 구글 실시간 검색 데이터베이스를 정밀 스캔하고 multi-angle(다각도) 교차 검증을 수행하여 오직 확실히 검증된 객관적 진실만을 추출하십시오.
+
+[정밀 검증 및 작성 지침]
+1. 인사말, 서론, 결론, 사설, 감상, 중립적이지 않은 주관적 표현, 안내 문구 등 불필요한 모든 꾸밈말을 완전히 삭제하십시오.
+2. 마크다운 헤더(#, ##, ###, ####, ##### 등) 기호는 절대 사용하지 마십시오.
+3. 수집된 웹 정보의 신뢰도를 엄격히 평가하고, 단순 블로그나 왜곡 가능성이 있는 개인 주장은 완전 배제하십시오.
+4. 구체적인 통계, 수치, 명칭, 일자 등 검증 가능한 핵심 데이터 위주로 명확히 정리하십시오.
+5. 각 명확히 구분되는 독립된 주제 및 단락 사이에는 반드시 '빈 줄(엔터 2번, 한 줄 띄움)'을 삽입하여 시각적 가독성과 독해 편의성을 극대화하십시오.
+6. 글머리 기호(•)를 사용하여 핵심 내용만을 정갈하게 제시하십시오.
+7. 출처 간 내용이 상충되는 불확실한 정보는 과감히 제외하고 100% 교차 확인된 사실만 기술하십시오.`;
+
+            const apiKey = ""; // API key populated by environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: query }] }],
+                tools: [{ google_search: {} }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error?.message || `API HTTP 에러 (${res.status})`);
+            }
+
+            const data = await res.json();
+            const candidate = data.candidates?.[0];
+
+            if (!candidate) {
+                throw new Error("결과 응답을 수신하지 못했습니다.");
+            }
+
+            // Extract generated text
+            let text = "";
+            if (candidate.content && candidate.content.parts) {
+                text = candidate.content.parts.map(p => p.text || '').join('');
+            }
+
+            // Extract sources from grounding metadata with improved deduplication
+            let sources = [];
+            const groundingMetadata = candidate.groundingMetadata;
+
+            if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                sources = groundingMetadata.groundingAttributions
+                    .map(attr => ({
+                        uri: attr.web?.uri,
+                        title: attr.web?.title
+                    }))
+                    .filter(s => s.uri && s.uri.startsWith('http'));
+            } else if (groundingMetadata && groundingMetadata.groundingChunks) {
+                sources = groundingMetadata.groundingChunks
+                    .map(chunk => ({
+                        uri: chunk.web?.uri,
+                        title: chunk.web?.title
+                    }))
+                    .filter(s => s.uri && s.uri.startsWith('http'));
+            }
+
+            return { text, sources };
+        }
+
+        // Copy button handler
+        copyBtn.addEventListener('click', () => {
+            const textToCopy = responseContent.innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const originalBtnHtml = copyBtn.innerHTML;
+            copyBtn.innerHTML = `<i class="fa-solid fa-check text-purple-600"></i> <span class="text-purple-600">복사됨</span>`;
+            setTimeout(() => { copyBtn.innerHTML = originalBtnHtml; }, 2000);
+        });
+
+        // Helper: Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Helper: Format Clean Text
+        function formatCleanText(raw) {
+            if (!raw) return '';
+            let str = escapeHtml(raw);
+
+            // Strip all markdown header symbols entirely and format with clean spacing
+            str = str.replace(/^#{1,6}\s*(.*$)/gim, '<div class="font-extrabold text-purple-900 mt-6 mb-2 text-sm md:text-base border-l-4 border-purple-400 pl-2.5">$1</div>');
+
+            // Bold styling
+            str = str.replace(/\*\*(.*?)\*\*/g, '<strong class="text-purple-950 font-bold bg-purple-50/80 px-1 py-0.5 rounded">$1</strong>');
+
+            // Bullet items with margin for extra readability between different points
+            str = str.replace(/^\* (.*$)/gim, '<div class="flex items-start my-2.5 pl-1"><span class="text-purple-500 mr-2.5 font-black text-base">•</span><span class="text-slate-800 font-medium leading-relaxed">$1</span></div>');
+            str = str.replace(/^- (.*$)/gim, '<div class="flex items-start my-2.5 pl-1"><span class="text-purple-500 mr-2.5 font-black text-base">•</span><span class="text-slate-800 font-medium leading-relaxed">$1</span></div>');
+
+            // Insert distinct spacing for empty lines / double linebreaks to separate independent facts
+            str = str.replace(/\n\n+/g, '<div class="h-4"></div>');
+            str = str.replace(/\n/g, '<br>');
+
+            return str;
+        }
+    </script>
+</body>
+</html>
